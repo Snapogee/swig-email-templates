@@ -40,17 +40,10 @@ function init(options, cb) {
           if (err) return cb(err);
           if (urlRewriteFn) rewriteUrls(document, urlRewriteFn);
           var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
-          juiceDocument(document, { url: fileUrl }, function(err) {
-            if (err) {
-              // free the associated memory
-              // with lazily created parentWindow
-              tryCleanup();
-              cb(err);
-            } else {
-              var inner = document.innerHTML;
+          var inner = document.innerHTML;
               tryCleanup();
               cb(null, inner);
-            }
+            
             function tryCleanup() {
               try {
                 document.parentWindow.close();
@@ -59,7 +52,27 @@ function init(options, cb) {
                 document.close();
               } catch (cleanupErr) {}
             }
-          });
+          
+          // juiceDocument(document, { url: fileUrl }, function(err) {
+//             if (err) {
+//               // free the associated memory
+//               // with lazily created parentWindow
+//               tryCleanup();
+//               cb(err);
+//             } else {
+//               var inner = document.innerHTML;
+//               tryCleanup();
+//               cb(null, inner);
+//             }
+//             function tryCleanup() {
+//               try {
+//                 document.parentWindow.close();
+//               } catch (cleanupErr) {}
+//               try {
+//                 document.close();
+//               } catch (cleanupErr) {}
+//             }
+//           });
         });
       });
     });
